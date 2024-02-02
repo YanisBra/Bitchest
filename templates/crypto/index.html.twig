@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CryptoController!{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+     <h1>Liste des Cryptos</h1>
+      {% if data.stats is defined %}
+        <p>Total Coins: {{ data.stats.totalCoins }}</p>
+        <p>Total Market Cap: {{ data.stats.totalMarketCap }}</p>
+        <p>Total 24h Volume: {{ data.stats.total24hVolume }}</p>
+
+        <table class="crypto-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Symbol</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for coin in data.coins %}
+                    <tr>
+                        <td>{{ coin.rank }}</td>
+                        <td>{{ coin.name }}</td>
+                        <td>{{ coin.symbol }}</td>
+                        <td>{{ coin.price }}</td>
+                        <td>{{ coin.change }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+</div>
+{% endblock %}

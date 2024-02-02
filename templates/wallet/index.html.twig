@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wallet index{% endblock %}
+
+{% block body %}
+    <h1>Wallet index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                {# <th>User</th> #}
+                <th>TotalBalance</th>
+                <th>CryptoBalance</th>
+                <th>UsableBalance</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for wallet in wallets %}
+            <tr>
+                <td>{{ wallet.id }}</td>
+                {# <td>{{ wallet.user.firstName }}</td> #}
+                <td>{{ wallet.totalBalance }}</td>
+                <td>{{ wallet.cryptoBalance }}</td>
+                <td>{{ wallet.usableBalance }}</td>
+                <td>
+                    <a href="{{ path('app_wallet_show', {'id': wallet.id}) }}">show</a>
+                    <a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_wallet_new') }}">Create new</a>
+{% endblock %}

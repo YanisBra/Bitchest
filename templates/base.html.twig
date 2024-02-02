@@ -12,6 +12,21 @@
         {% endblock %}
     </head>
     <body>
+    <nav >
+        <div >
+            <div>
+                <a href="{{path('app_home')}}">Home</a>
+                <a href="{{path('app_user_index')}}">User index</a>
+                <a href="{{path('app_wallet_index')}}">Wallet index</a>
+                <a href="{{path('app_transaction_index')}}">Transaction index</a>
+                <a href="{{path('app_crypto')}}">Crypto index</a>
+                <a href="{{path('app_register')}}">Register</a>
+                <a href="{{path('app_login')}}">Login</a>
+                <a href="{{path('app_logout')}}">Logout</a>
+                
+
+        </div>
+    </nav>
         {% block body %}{% endblock %}
     </body>
 </html>

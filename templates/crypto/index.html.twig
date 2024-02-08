@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
 {% block title %}Hello CryptoController!{% endblock %}
 
@@ -36,4 +36,29 @@
         <p>No data available.</p>
     {% endif %}
 </div>
+{% endblock %} #}
+{% block body %}
+<div class="example-wrapper">
+     <h1>Liste des Cryptos</h1>
+      {% if cryptoData is not empty %}
+        <ul>
+            {% for crypto in cryptoData %}
+                <li>{{ crypto.name }} - {{ crypto.price }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+</div>
+
+{% if bitcoinData is not null %}
+<div class="bitcoin-info">
+    <h2>Bitcoin</h2>
+    <p>Nom : {{ bitcoinData.name }}</p>
+    <p>Prix : {{ bitcoinData.price }}</p>
+    {# <p>Description : {{ bitcoinData.description }}</p> <!-- Assurez-vous d'adapter cette ligne à votre structure de données réelle --> #}
+</div>
+{% endif %}
 {% endblock %}
+
+

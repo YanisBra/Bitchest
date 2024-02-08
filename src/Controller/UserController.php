@@ -42,7 +42,7 @@ class UserController extends AbstractController
             $wallet = new Wallet();
             // Ajouter des logiques pour configurer le wallet selon vos besoins
 
-            // Associer le wallet à l'utilisateur
+            // Associer le wallet Ã  l'utilisateur
             $user->setHasWallet($wallet);
             
             $entityManager->persist($user);
@@ -98,7 +98,5 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    
+    }   
 }

@@ -22,6 +22,36 @@ class Wallet
     #[ORM\Column]
     private ?float $usableBalance = 500.0;
 
+    #[ORM\Column]
+    private ?float $bitcoin = 0.0;
+
+    #[ORM\Column]
+    private ?float $Ethereum = 0.0;
+
+    #[ORM\Column]
+    private ?float $XRP = 0.0;
+
+    #[ORM\Column]
+    private ?float $cardano = 0.0;
+
+    #[ORM\Column]
+    private ?float $litecoin = 0.0;
+
+    #[ORM\Column]
+    private ?float $bitcoin_cash = 0.0;
+
+    #[ORM\Column]
+    private ?float $stellar = 0.0;
+
+    #[ORM\Column]
+    private ?float $iota = 0.0;
+
+    #[ORM\Column]
+    private ?float $dash = 0.0;
+
+    #[ORM\Column]
+    private ?float $nem = 0.0;
+
     public function __construct()
     {
         // Initialiser les propriétés dans le constructeur si nécessaire
@@ -74,5 +104,125 @@ class Wallet
     private function calculateTotalBalance(): float
     {
         return $this->cryptoBalance + $this->usableBalance;
+    }
+
+    public function getBitcoin(): ?float
+    {
+        return $this->bitcoin;
+    }
+
+    public function setBitcoin(float $bitcoin): static
+    {
+        $this->bitcoin = $bitcoin;
+
+        return $this;
+    }
+
+    public function getEthereum(): ?float
+    {
+        return $this->Ethereum;
+    }
+
+    public function setEthereum(float $Ethereum): static
+    {
+        $this->Ethereum = $Ethereum;
+
+        return $this;
+    }
+
+    public function getXRP(): ?float
+    {
+        return $this->XRP;
+    }
+
+    public function setXRP(float $XRP): static
+    {
+        $this->XRP = $XRP;
+
+        return $this;
+    }
+
+    public function getCardano(): ?float
+    {
+        return $this->cardano;
+    }
+
+    public function setCardano(float $cardano): static
+    {
+        $this->cardano = $cardano;
+
+        return $this;
+    }
+
+    public function getLitecoin(): ?float
+    {
+        return $this->litecoin;
+    }
+
+    public function setLitecoin(float $litecoin): static
+    {
+        $this->litecoin = $litecoin;
+
+        return $this;
+    }
+
+    public function getBitcoinCash(): ?float
+    {
+        return $this->bitcoin_cash;
+    }
+
+    public function setBitcoinCash(float $bitcoin_cash): static
+    {
+        $this->bitcoin_cash = $bitcoin_cash;
+
+        return $this;
+    }
+
+    public function getStellar(): ?float
+    {
+        return $this->stellar;
+    }
+
+    public function setStellar(float $stellar): static
+    {
+        $this->stellar = $stellar;
+
+        return $this;
+    }
+
+    public function getIota(): ?float
+    {
+        return $this->iota;
+    }
+
+    public function setIota(float $iota): static
+    {
+        $this->iota = $iota;
+
+        return $this;
+    }
+
+    public function getDash(): ?float
+    {
+        return $this->dash;
+    }
+
+    public function setDash(float $dash): static
+    {
+        $this->dash = $dash;
+
+        return $this;
+    }
+
+    public function getNem(): ?float
+    {
+        return $this->nem;
+    }
+
+    public function setNem(float $nem): static
+    {
+        $this->nem = $nem;
+
+        return $this;
     }
 }

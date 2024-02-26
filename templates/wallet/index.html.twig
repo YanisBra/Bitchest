@@ -13,29 +13,53 @@
                 <th>TotalBalance</th>
                 <th>CryptoBalance</th>
                 <th>UsableBalance</th>
+                <th>Bitcoin</th>
+                <th>Ethereum</th>
+                <th>XRP</th>
+                <th>Cardano</th>
+                <th>Litecoin</th>
+                <th>Bitcoin Cash</th>
+                <th>Stellar</th>
+                <th>IOTA</th>
+                <th>Dash</th>
+                <th>NEM</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for wallet in wallets %}
-            <tr>
-                <td>{{ wallet.id }}</td>
-                {# <td>{{ wallet.user.firstName }}</td> #}
-                <td>{{ wallet.totalBalance }}</td>
-                <td>{{ wallet.cryptoBalance }}</td>
-                <td>{{ wallet.usableBalance }}</td>
-                <td>
-                    <a href="{{ path('app_wallet_show', {'id': wallet.id}) }}">show</a>
-                    <a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a>
-                </td>
-            </tr>
+            {% if is_granted('ROLE_ADMIN') or app.user.hasWallet == wallet %}
+                <tr>
+                    <td>{{ wallet.id }}</td>
+                    {# <td>{{ wallet.user.firstName }}</td> #}
+                    <td>{{ wallet.totalBalance }}</td>
+                    <td>{{ wallet.cryptoBalance }}</td>
+                    <td>{{ wallet.usableBalance }}</td>
+                    <td>{{ wallet.bitcoin }}</td>
+                    <td>{{ wallet.ethereum }}</td>
+                    <td>{{ wallet.xrp }}</td>
+                    <td>{{ wallet.cardano }}</td>
+                    <td>{{ wallet.litecoin }}</td>
+                    <td>{{ wallet.bitcoincash }}</td>
+                    <td>{{ wallet.Stellar }}</td>
+                    <td>{{ wallet.iota }}</td>
+                    <td>{{ wallet.dash }}</td>
+                    <td>{{ wallet.nem }}</td>
+                    <td>
+                        <a href="{{ path('app_wallet_show', {'id': wallet.id}) }}">show</a>
+                        <a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% endif %}
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="15">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('app_wallet_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

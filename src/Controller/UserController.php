@@ -86,6 +86,8 @@ class UserController extends AbstractController
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
+            'button_label' => 'Update', // Définir la variable button_label avec la valeur souhaitée
+
         ]);
     }
 

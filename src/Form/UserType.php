@@ -43,7 +43,7 @@ class UserType extends AbstractType
              ->add('password', PasswordType::class, [
                 'data' => $randomPassword, // Remplit le champ avec le mot de passe aléatoire
                 'attr' => [
-                    'readonly' => true,
+                    'readonly' => false,
                     'value' => $randomPassword
                 ],
                 'required' => false,
@@ -56,6 +56,8 @@ class UserType extends AbstractType
                 'mapped' => false, // Ne mappez pas cela à l'entité User
                 'required' => false,
             ])
+
+            
             ->add('roles', ChoiceType::class, [
                 'choices' => [
                     'Admin' => 'ROLE_ADMIN',

@@ -52,6 +52,9 @@ class Wallet
     #[ORM\Column]
     private ?float $nem = 0.0;
 
+    #[ORM\ManyToOne(inversedBy: 'cryptos')]
+    private ?Transaction $transaction = null;
+
     public function __construct()
     {
         // Initialiser les propriétés dans le constructeur si nécessaire
@@ -222,6 +225,18 @@ class Wallet
     public function setNem(float $nem): static
     {
         $this->nem = $nem;
+
+        return $this;
+    }
+
+    public function getTransaction(): ?Transaction
+    {
+        return $this->transaction;
+    }
+
+    public function setTransaction(?Transaction $transaction): static
+    {
+        $this->transaction = $transaction;
 
         return $this;
     }

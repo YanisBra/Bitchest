@@ -21,7 +21,7 @@ class Crypto
     #[ORM\Column(length: 255)]
     private ?string $Symbol = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 3)]
     private ?float $Price = null;
 
     #[ORM\OneToMany(mappedBy: 'cryptocurrency', targetEntity: Transaction::class)]

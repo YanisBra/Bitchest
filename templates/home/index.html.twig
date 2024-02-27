@@ -2,7 +2,7 @@
 
 {% block body %}
     <h1>Hello {{ app.user ? app.user.firstName : 'Guest' }}!</h1>
-    <h2>You have ${{ app.user.hasWallet.usablebalance }}</h2>
+    {# <h2>You have ${{ app.user.hasWallet.usablebalance }}</h2> #}
 
     {% if app.user %}
         {% if app.user.hasWallet %}

@@ -28,9 +28,6 @@ class Transaction
     #[ORM\Column]
     private ?float $amount = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $crypto = null;
-
     #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
@@ -96,18 +93,6 @@ class Transaction
     public function setAmount(float $amount): static
     {
         $this->amount = $amount;
-
-        return $this;
-    }
-
-    public function getCrypto(): ?string
-    {
-        return $this->crypto;
-    }
-
-    public function setCrypto(?string $crypto): static
-    {
-        $this->crypto = $crypto;
 
         return $this;
     }

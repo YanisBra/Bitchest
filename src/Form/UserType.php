@@ -32,10 +32,6 @@ class UserType extends AbstractType
     {
         $randomPassword = $this->genererMotDePasseAleatoire();
 
-        echo '<pre>';
-        var_dump($randomPassword);
-        echo '</pre>';
-
         $builder
             ->add('firstName')            
             ->add('lastName')
@@ -55,6 +51,23 @@ class UserType extends AbstractType
                 ],
                 'mapped' => false, // Ne mappez pas cela à l'entité User
                 'required' => false,
+            ])
+            ->add('newPassword', PasswordType::class, [
+                                // instead of being set onto the object directly,
+                // this is read and encoded in the controller
+                'mapped' => false,
+                'attr' => ['autocomplete' => 'new-password'],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please enter a password',
+                    ]),
+                    new Length([
+                        'min' => 1,
+                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        // max length allowed by Symfony for security reasons
+                        'max' => 4096,
+                    ]),
+                ],
             ])
 
             

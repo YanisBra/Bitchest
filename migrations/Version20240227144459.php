@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240226125134 extends AbstractMigration
+final class Version20240227144459 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,14 +20,14 @@ final class Version20240226125134 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE transaction ADD CONSTRAINT FK_723705D1583FC03A FOREIGN KEY (cryptocurrency_id) REFERENCES crypto (id)');
-        $this->addSql('CREATE INDEX IDX_723705D1583FC03A ON transaction (cryptocurrency_id)');
+        $this->addSql('CREATE TABLE crypto_price_history (id INT AUTO_INCREMENT NOT NULL, coin_uuid VARCHAR(255) NOT NULL, price NUMERIC(20, 10) NOT NULL, timestamp INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE crypto DROP timestamp');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE transaction DROP FOREIGN KEY FK_723705D1583FC03A');
-        $this->addSql('DROP INDEX IDX_723705D1583FC03A ON transaction');
+        $this->addSql('DROP TABLE crypto_price_history');
+        $this->addSql('ALTER TABLE crypto ADD timestamp INT NOT NULL');
     }
 }

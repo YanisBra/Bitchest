@@ -23,22 +23,24 @@
         </thead>
         <tbody>
         {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.firstname }}</td>
-                <td>{{ user.lastname }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.hasWallet ? user.hasWallet.id }}</td>
-                <td>{{ user.hasWallet ? user.hasWallet.totalbalance }}</td>
-                <td>{{ user.hasWallet ? user.hasWallet.cryptobalance }}</td>
-                <td>{{ user.hasWallet ? user.hasWallet.usablebalance }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.password }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-                </td>
-            </tr>
+            {% if app.user == user or is_granted('ROLE_ADMIN') %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.firstname }}</td>
+                    <td>{{ user.lastname }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.hasWallet ? user.hasWallet.id }}</td>
+                    <td>{{ user.hasWallet ? user.hasWallet.totalbalance }}</td>
+                    <td>{{ user.hasWallet ? user.hasWallet.cryptobalance }}</td>
+                    <td>{{ user.hasWallet ? user.hasWallet.usablebalance }}</td>
+                    <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                    <td>{{ user.password }}</td>
+                    <td>
+                        <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+                        <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% endif %}
         {% else %}
             <tr>
                 <td colspan="5">no records found</td>
@@ -47,5 +49,8 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_user_new') }}">Create new</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_user_new') }}">Create new</a>
+    {% endif %}
+
 {% endblock %}

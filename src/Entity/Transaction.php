@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TransactionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -26,15 +28,20 @@ class Transaction
     #[ORM\Column]
     private ?float $amount = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $crypto = null;
-
     #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
     private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'transaction', targetEntity: Wallet::class)]
+    private Collection $cryptos;
+
+    #[ORM\ManyToOne(inversedBy: 'transactions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Crypto $cryptocurrency = null;
 
     public function __construct()
     {
         $this->date = new \DateTime();
+        $this->cryptos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -73,7 +80,7 @@ class Transaction
 
     public function setQuantity(float $quantity): static
     {
-        $this->quantity = $quantity;
+        $this->quantity = round($quantity, 5);
 
         return $this;
     }
@@ -90,18 +97,6 @@ class Transaction
         return $this;
     }
 
-    public function getCrypto(): ?string
-    {
-        return $this->crypto;
-    }
-
-    public function setCrypto(string $crypto): static
-    {
-        $this->crypto = $crypto;
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->user;
@@ -110,6 +105,48 @@ class Transaction
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Wallet>
+     */
+    public function getCryptos(): Collection
+    {
+        return $this->cryptos;
+    }
+
+    public function addCrypto(Wallet $crypto): static
+    {
+        if (!$this->cryptos->contains($crypto)) {
+            $this->cryptos->add($crypto);
+            $crypto->setTransaction($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCrypto(Wallet $crypto): static
+    {
+        if ($this->cryptos->removeElement($crypto)) {
+            // set the owning side to null (unless already changed)
+            if ($crypto->getTransaction() === $this) {
+                $crypto->setTransaction(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCryptocurrency(): ?Crypto
+    {
+        return $this->cryptocurrency;
+    }
+
+    public function setCryptocurrency(?Crypto $cryptocurrency): static
+    {
+        $this->cryptocurrency = $cryptocurrency;
 
         return $this;
     }

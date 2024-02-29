@@ -28,7 +28,7 @@ class UserController extends AbstractController
     public function new(Request $request, UserPasswordHasherInterface $userPasswordHasher,EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, ['is_new' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -68,14 +68,15 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, UserPasswordHasherInterface $userPasswordHasher, User $user, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, ['is_edit' => true]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
-                    $form->get('password')->getData()
+                    $form->get('newPassword')->getData()
                 )
             );
             $entityManager->flush();
@@ -86,6 +87,8 @@ class UserController extends AbstractController
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
+            'button_label' => 'Update', // Définir la variable button_label avec la valeur souhaitée
+
         ]);
     }
 

@@ -2,6 +2,8 @@
 
     {% set totalCryptoBalance = 0 %}
 
+
+
     {% for crypto in cryptoData %}
             {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
             {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price) %}
@@ -20,7 +22,7 @@
                 <li>Argent d'achat: {{ app.user.hasWallet.usablebalance }}</li>
                 <li>Crypto valeur d'achat : {{ app.user.hasWallet.cryptobalance }}</li>
                 <li>Crypto valeur actuelle : ${{ totalCryptoBalance|number_format(3, '.', ',') }} </li>
-                <li>Benef : {{ (totalCryptoBalance - app.user.hasWallet.cryptobalance)|number_format(3, '.', ',') }}$ soit {{ ((totalCryptoBalance - app.user.hasWallet.cryptobalance) / app.user.hasWallet.cryptobalance * 100)|number_format(1, '.', ',') }}%</li>
+                <li>Benef : {{ (totalCryptoBalance - app.user.hasWallet.cryptobalance ?: 1)|number_format(3, '.', ',') }}$ soit {{ ((totalCryptoBalance - app.user.hasWallet.cryptobalance ?: 1) / (app.user.hasWallet.cryptobalance ?: 1) * 100)|number_format(1, '.', ',') }}%</li>
                 
 <ul>
     {% for crypto in cryptoData %}

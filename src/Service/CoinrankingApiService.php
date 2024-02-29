@@ -34,34 +34,41 @@ class CoinrankingApiService
         }
     }
 
-    public function getBitcoinHistory(): ?array
+    public function getCoinHistory(array $uuids): ?array
 {
-    $curl = curl_init();
+    $historyData = [];
 
-    curl_setopt_array($curl, [
-        CURLOPT_URL => "https://coinranking1.p.rapidapi.com/coin/Qwsogvtv82FCd/history?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h",
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_ENCODING => "",
-	CURLOPT_MAXREDIRS => 10,
-	CURLOPT_TIMEOUT => 30,
-	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	CURLOPT_CUSTOMREQUEST => "GET",
-       CURLOPT_HTTPHEADER => [
-		"X-RapidAPI-Host: coinranking1.p.rapidapi.com",
-		"X-RapidAPI-Key: SIGN-UP-FOR-KEY"
-	],
-]);
+    foreach ($uuids as $uuid) {
+        $curl = curl_init();
 
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://coinranking1.p.rapidapi.com/coin/{$uuid}/history?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=30d",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => [
+                "X-RapidAPI-Host: coinranking1.p.rapidapi.com",
+                "X-RapidAPI-Key: e4572342c9msh6144f178c7823b4p1aa0f9jsn6284d6bdc09b"
+            ],
+        ]);
 
-    curl_close($curl);
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
 
-    if ($err) {
-        return null; // Gestion de l'erreur de requête cURL
-    } else {
-        // Notez que j'ai remplacé "echo $response" par le décodage JSON et le renvoi du tableau associé.
-        return json_decode($response, true)['data']['history'];
+        curl_close($curl);
+
+        if (!$err) {
+            $decodedResponse = json_decode($response, true);
+
+            if (isset($decodedResponse['data']['history'])) {
+                $historyData[$uuid] = $decodedResponse['data']['history'];
+            }
+        }
     }
+
+    return $historyData;
 }
 }

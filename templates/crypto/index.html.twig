@@ -1,64 +1,26 @@
- {% extends 'base.html.twig' %}
-
-{# {% block title %}Hello CryptoController!{% endblock %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="example-wrapper">
-     <h1>Liste des Cryptos</h1>
-      {% if data.stats is defined %}
-        <p>Total Coins: {{ data.stats.totalCoins }}</p>
-        <p>Total Market Cap: {{ data.stats.totalMarketCap }}</p>
-        <p>Total 24h Volume: {{ data.stats.total24hVolume }}</p>
 
-        <table class="crypto-table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Symbol</th>
-                    <th>Price</th>
-                    <th>24h Change</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for coin in data.coins %}
-                    <tr>
-                        <td>{{ coin.rank }}</td>
-                        <td>{{ coin.name }}</td>
-                        <td>{{ coin.symbol }}</td>
-                        <td>{{ coin.price }}</td>
-                        <td>{{ coin.change }}%</td>
-                    </tr>
+
+    <div class="example-wrapper">
+        <h1>Liste des Cryptos</h1>
+        <h2>MODIF</h2>
+        {% if cryptoData is not empty %}
+            <ul>
+                {% for crypto in cryptoData %}
+                    <li>{{ crypto.name }} - {{ crypto.price }}</li>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No data available.</p>
-    {% endif %}
-</div>
-{% endblock %} #}
-{% block body %}
-<div class="example-wrapper">
-     <h1>Liste des Cryptos</h1>
-     <h2>MODIF</h2>
-      {% if cryptoData is not empty %}
-        <ul>
-            {% for crypto in cryptoData %}
-                <li>{{ crypto.name }} - {{ crypto.price }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No data available.</p>
-    {% endif %}
-</div>
+            </ul>
+        {% else %}
+            <p>No data available.</p>
+        {% endif %}
 
-{# {% if bitcoinData is not null %}
-<div class="bitcoin-info">
-    <h2>Bitcoin</h2>
-    <p>Nom : {{ bitcoinData.name }}</p>
-    <p>Prix : {{ bitcoinData.price }}</p>
-</div>
-{% endif %} #}
+        <h1>Historique des crypto </h1>
+        {% if cryptoHistory is not null %}
+            <pre>{{ dump(cryptoHistory) }}</pre>
+        {% else %}
+            <p>Aucune données d'historique disponibles pour le Bitcoin.</p>
+        {% endif %}
+    </div>
 {% endblock %}
-
-

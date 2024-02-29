@@ -27,6 +27,9 @@ class Crypto
     #[ORM\OneToMany(mappedBy: 'cryptocurrency', targetEntity: Transaction::class)]
     private Collection $transactions;
 
+    #[ORM\Column]
+    private array $priceHistory = [];
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -99,6 +102,18 @@ class Crypto
                 $transaction->setCryptocurrency(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPriceHistory(): array
+    {
+        return $this->priceHistory;
+    }
+
+    public function setPriceHistory(array $priceHistory): static
+    {
+        $this->priceHistory = $priceHistory;
 
         return $this;
     }

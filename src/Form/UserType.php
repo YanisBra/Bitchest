@@ -35,26 +35,36 @@ class UserType extends AbstractType
         $builder
             ->add('firstName')            
             ->add('lastName')
-            ->add('email', EmailType::class)
-             ->add('password', PasswordType::class, [
-                'data' => $randomPassword, // Remplit le champ avec le mot de passe aléatoire
+            ->add('email', EmailType::class);
+
+        // Ajoute le champ password uniquement si le formulaire n'est pas en mode édition
+        if (!$options['is_edit']) {
+            $builder->add('password', PasswordType::class, [
+                'data' => $randomPassword,
                 'attr' => [
                     'readonly' => false,
                     'value' => $randomPassword
                 ],
                 'required' => false,
-            ])
-            ->add('motDePasseGenere', TextType::class, [ // Champ de texte simple pour afficher le mot de passe
-                'attr' => [
-                    'readonly' => true,
-                    'value' => $randomPassword,
+            ]);
+        }
+
+
+        // Ajoute le champ roles uniquement si le formulaire n'est pas en mode édition
+        if (!$options['is_edit']) {
+            $builder->add('roles', ChoiceType::class, [
+                'choices' => [
+                    'Admin' => 'ROLE_ADMIN',
                 ],
-                'mapped' => false, // Ne mappez pas cela à l'entité User
-                'required' => false,
-            ])
-            ->add('newPassword', PasswordType::class, [
-                                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
+                'multiple' => true,
+                'expanded' => true,
+                'label' => 'Roles',
+                'required' => true,
+            ]);
+        }
+
+        if (!$options['is_new']) {
+            $builder->add('newPassword', PasswordType::class, [
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
@@ -64,28 +74,31 @@ class UserType extends AbstractType
                     new Length([
                         'min' => 1,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],
-            ])
-
-            
-            ->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'Admin' => 'ROLE_ADMIN',
-                ],
-                'multiple' => true,
-                'expanded' => true,
-                'label' => 'Roles',
-                'required' => true,
             ]);
+        }
+
+        // Ajoute le champ motDePasseGenere uniquement si le formulaire n'est pas en mode édition
+        if (!$options['is_edit']) {
+            $builder->add('motDePasseGenere', TextType::class, [
+                'attr' => [
+                    'readonly' => true,
+                    'value' => $randomPassword,
+                ],
+                'mapped' => false,
+                'required' => false,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'is_edit' => false,
+            'is_new' => false, // Ajoutez cette ligne pour définir l'option "is_new"
         ]);
     }
 }

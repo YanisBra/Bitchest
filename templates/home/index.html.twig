@@ -1,34 +1,49 @@
 {% extends 'base.html.twig' %}
 
+    {% set totalCryptoBalance = 0 %}
+
+    {% for crypto in cryptoData %}
+            {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
+            {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price) %}
+    {% endfor %}
+
 {% block body %}
     <h1>Hello {{ app.user ? app.user.firstName : 'Guest' }}!</h1>
     {# <h2>You have ${{ app.user.hasWallet.usablebalance }}</h2> #}
 
     {% if app.user %}
-        {% if app.user.hasWallet %}
             <h2>Your Wallet Details:</h2>
+            <h3>Mange ton solde dans la tronche :  ${{ totalCryptoBalance|number_format(3, '.', ',') }}</h3>
+
             <ul>
                 <li>Total Balance: {{ app.user.hasWallet.totalbalance }}</li>
-                <li>Crypto Balance: {{ app.user.hasWallet.cryptobalance }}</li>
-                <li>Usable Balance: {{ app.user.hasWallet.usablebalance }}</li>
-                <li>Bitcoin: {{ app.user.hasWallet.bitcoin }}</li>
-                <li>Ethereum: {{ app.user.hasWallet.ethereum }}</li>
-                <li>XRP: {{ app.user.hasWallet.xrp }}</li>
-                <li>Cardano: {{ app.user.hasWallet.cardano }}</li>
-                <li>Litecoin: {{ app.user.hasWallet.litecoin }}</li>
-                <li>Bitcoin Cash: {{ app.user.hasWallet.bitcoincash }}</li>
-                <li>Stellar: {{ app.user.hasWallet.stellar }}</li>
-                <li>IOTA: {{ app.user.hasWallet.iota }}</li>
-                <li>Dash: {{ app.user.hasWallet.dash }}</li>
-                <li>NEM: {{ app.user.hasWallet.nem }}</li>
+                <li>Argent d'achat: {{ app.user.hasWallet.usablebalance }}</li>
+                <li>Crypto valeur d'achat : {{ app.user.hasWallet.cryptobalance }}</li>
+                <li>Crypto valeur actuelle : ${{ totalCryptoBalance|number_format(3, '.', ',') }} </li>
+                <li>Benef : {{ (totalCryptoBalance - app.user.hasWallet.cryptobalance)|number_format(3, '.', ',') }}$ soit {{ ((totalCryptoBalance - app.user.hasWallet.cryptobalance) / app.user.hasWallet.cryptobalance * 100)|number_format(1, '.', ',') }}%</li>
+                
+<ul>
+    {% for crypto in cryptoData %}
+        {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
+    <li>{{ crypto.name }}: ${{ (walletAmount * crypto.price)|number_format(3, '.', ',') }}</li>
+    {% endfor %}
+</ul>
+
+
+</h1>
+                
+                    {# {% for crypto in cryptoData %}
+                        {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower) ?? 0 %}
+                        <li>{{ crypto.name }}: ${{ walletAmount * crypto.price }}</li>
+                    {% endfor %} #}
+                    {# <li>test : {% set dashCrypto = cryptoData|filter(c => c.symbol == 'BTC')|first %}
+                        {{ attribute(app.user.hasWallet, dashCrypto.name|lower) * dashCrypto.price }}</li>
+                 <ul> #}
+                </ul>
             </ul>
-        {% else %}
-            <p>You don't have a wallet yet. Please contact support to create one.</p>
-        {% endif %}
     {% endif %}
     <div class="example-wrapper">
      <h1>Liste des Cryptos</h1>
-     <h2>Mange les crypto</h2>
       {% if cryptoData is not empty %}
         <ul>
             {% for crypto in cryptoData %}

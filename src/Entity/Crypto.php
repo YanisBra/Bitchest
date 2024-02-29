@@ -21,11 +21,14 @@ class Crypto
     #[ORM\Column(length: 255)]
     private ?string $Symbol = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 3)]
     private ?float $Price = null;
 
     #[ORM\OneToMany(mappedBy: 'cryptocurrency', targetEntity: Transaction::class)]
     private Collection $transactions;
+
+    #[ORM\Column]
+    private array $priceHistory = [];
 
     public function __construct()
     {
@@ -99,6 +102,18 @@ class Crypto
                 $transaction->setCryptocurrency(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPriceHistory(): array
+    {
+        return $this->priceHistory;
+    }
+
+    public function setPriceHistory(array $priceHistory): static
+    {
+        $this->priceHistory = $priceHistory;
 
         return $this;
     }

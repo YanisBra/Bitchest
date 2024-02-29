@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\VarDumper\VarDumper;
+
 
 class HomeController extends AbstractController
 {
@@ -24,6 +26,9 @@ class HomeController extends AbstractController
         $filteredCryptoData = array_filter($cryptoData, function ($crypto) use ($allowedCryptoSymbols) {
             return in_array($crypto['symbol'], $allowedCryptoSymbols);
         });
+
+                VarDumper::dump($filteredCryptoData);
+
 
         foreach ($filteredCryptoData as $crypto) {
             // Vérifie si la crypto existe déjà en base de données

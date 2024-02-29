@@ -80,7 +80,7 @@ class Transaction
 
     public function setQuantity(float $quantity): static
     {
-        $this->quantity = $quantity;
+        $this->quantity = round($quantity, 5);
 
         return $this;
     }

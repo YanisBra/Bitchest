@@ -89,6 +89,8 @@ class CryptoController extends AbstractController
             }
         }
 
+        $bitcoinHistory = $coinrankingApiService->getBitcoinHistory();
+
         // Exécute les requêtes SQL pour sauvegarder les données
         $entityManager->flush();
 

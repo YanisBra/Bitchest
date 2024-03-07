@@ -57,44 +57,29 @@ class CryptoController extends AbstractController
     #[Route('/crypto', name: 'app_crypto')]
     public function fetchData(CoinrankingApiService $coinrankingApiService, EntityManagerInterface $entityManager)
     {
-        // Cryptos autorisées
-        $allowedCryptoSymbols = ['BTC', 'ETH', 'XRP', 'BCH', 'ADA', 'LTC', 'XEM', 'XLM', 'MIOTA', 'DASH'];
 
-        // Utilise le service pour récupérer les données des cryptos
-        $cryptoData = $coinrankingApiService->getCoinData();
 
-        // Filtrer les données pour ne conserver que les cryptos autorisées
-        $filteredCryptoData = array_filter($cryptoData, function ($crypto) use ($allowedCryptoSymbols) {
-            return in_array($crypto['symbol'], $allowedCryptoSymbols);
-        });
+         $cryptoUUIDs = [
+    'Qwsogvtv82FCd', // BTC
+    'razxDUgYGNAdQ', // ETH
+    '-l8Mn2pVlRs-p', // XRP
+    'qzawljRxB5bYu', // ADA
+    'ZlZpzOJo43mIo', // BCH
+    'D7B1x_ks7WhV5', // LTC
+    'f3iaFeCKEmkaZ', // XLM
+    'LtWwuVANwRzV_', // MIOTA
+    'C9DwH-T7MEGmo', // DASH
+    'DZtb-6X8yCx0h', // XEM
+];
 
-        foreach ($filteredCryptoData as $crypto) {
-            // Vérifie si la crypto existe déjà en base de données
-            $existingCrypto = $entityManager->getRepository(Crypto::class)->findOneBy(['Symbol' => $crypto['symbol']]);
+    $cryptoHistory = $coinrankingApiService->getCoinHistory($cryptoUUIDs);
 
-            // Si la crypto existe déjà, met à jour ses propriétés
-            if ($existingCrypto) {
-                $existingCrypto->setPrice($crypto['price']);
-                // Met à jour d'autres propriétés si nécessaire
-            } else {
-                // Si la crypto n'existe pas, crée une nouvelle instance de Crypto
-                $newCrypto = new Crypto();
-                $newCrypto->setName($crypto['name']);
-                $newCrypto->setSymbol($crypto['symbol']);
-                $newCrypto->setPrice($crypto['price']);
-                // Initialise d'autres propriétés si nécessaire
+    // Exécute les requêtes SQL pour sauvegarder les données (déplacé après le rendu)
+    $entityManager->flush();
 
-                // Persiste la nouvelle crypto
-                $entityManager->persist($newCrypto);
-            }
-        }
-
-        $bitcoinHistory = $coinrankingApiService->getBitcoinHistory();
-
-        // Exécute les requêtes SQL pour sauvegarder les données
-        $entityManager->flush();
-
-        // Retourne une réponse, par exemple une redirection ou une vue
-        return $this->render('crypto/index.html.twig', ['cryptoData' => $filteredCryptoData]);
+    // Passer les données d'historique au template Twig
+    return $this->render('crypto/index.html.twig', [
+        'cryptoHistory' => $cryptoHistory,
+    ]);
     }
 }

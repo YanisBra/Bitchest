@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType; // Ajout de TextType
+use Symfony\Component\Form\Extension\Core\Type\HiddenType; // Ajouter le type HiddenType en utilisant le namespace approprié
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -39,7 +40,7 @@ class UserType extends AbstractType
 
         // Ajoute le champ password uniquement si le formulaire n'est pas en mode édition
         if (!$options['is_edit']) {
-            $builder->add('password', PasswordType::class, [
+            $builder->add('password', HiddenType::class, [
                 'data' => $randomPassword,
                 'attr' => [
                     'readonly' => false,

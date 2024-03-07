@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Wallet;
 use App\Form\WalletType;
 use App\Repository\WalletRepository;
+use App\Service\CoinrankingApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,10 +44,17 @@ class WalletController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_wallet_show', methods: ['GET'])]
-    public function show(Wallet $wallet): Response
+    public function show(Wallet $wallet, CoinrankingApiService $coinrankingApiService): Response
+        // public function fetchData(CoinrankingApiService $coinrankingApiService): Response
+
     {
+
+        $CryptoData = $coinrankingApiService->getCryptoData();
+
+
         return $this->render('wallet/show.html.twig', [
             'wallet' => $wallet,
+            'cryptoData' => $CryptoData
         ]);
     }
 

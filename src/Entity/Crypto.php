@@ -30,6 +30,9 @@ class Crypto
     #[ORM\Column]
     private array $priceHistory = [];
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $icon = null;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -114,6 +117,18 @@ class Crypto
     public function setPriceHistory(array $priceHistory): static
     {
         $this->priceHistory = $priceHistory;
+
+        return $this;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(?string $icon): static
+    {
+        $this->icon = $icon;
 
         return $this;
     }

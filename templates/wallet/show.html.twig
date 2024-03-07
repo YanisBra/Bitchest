@@ -1,16 +1,62 @@
 {% extends 'base.html.twig' %}
 
+        {% set totalCryptoBalance = 0 %}
+        {% for crypto in cryptoData %}
+            {% set walletAmount = attribute(wallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
+            {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price)|number_format(3, '.', ',') %}
+        {% endfor %}
+        {% set profit = (totalCryptoBalance - wallet.cryptobalance ?: 1)|number_format(3, '.', ',') %}
+
+
 {% block title %}Wallet{% endblock %}
 
-{% block body %}
-    <h1>Wallet</h1>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Ajoutez vos styles personnalisés ici */
 
-    <table class="table">
+        /* Pour limiter la taille des logos à 15x15 pixels */
+        .crypto-logo {
+            max-width: 28px;
+            max-height: 28px;
+        }
+
+        /* Pour aligner verticalement les logos et les noms de cryptomonnaies */
+        .crypto-item {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Ajoutez des marges entre les éléments si nécessaire */
+        .crypto-item img {
+            margin-right: 5px;
+        }
+
+        /* Changement de couleur pour le changement sur 24h */
+        .positive-change {
+            color: #00B053; /* Vert */
+        }
+
+        .negative-change {
+            color: #EB0A24; /* Rouge */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+<!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="main-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
+            {% if is_granted('ROLE_ADMIN') %}<li class="breadcrumb-item"><a href="{{ path('app_wallet_index') }}">Wallet</a></li>{% endif %}
+            <li class="breadcrumb-item active" aria-current="page">My Wallet</li>
+        </ol>
+    </nav>
+    <!-- /Breadcrumb -->
+
+    {# <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ wallet.id }}</td>
-            </tr>
             <tr>
                 <th>TotalBalance</th>
                 <td>{{ wallet.totalBalance }}</td>
@@ -24,11 +70,56 @@
                 <td>{{ wallet.usableBalance }}</td>
             </tr>
         </tbody>
-    </table>
+    </table> #}
 
-    <a href="{{ path('app_wallet_index') }}">back to list</a>
+    <div class="card" style="border-radius: 10px;">
+    <div class="card-body">
+        <h5 class="card-title d-flex justify-content-between align-items-center  text-muted">
+        <span>Total Crypto Blance</span>
+        <div>
+        </div>
+        </h5>
+        <h4 class="card-subtitle mb-2">{{ totalCryptoBalance }}€</h4>
+        <h7 class="{% if profit > 0 %}positive-change{% else %}negative-change{% endif %}">Profit : {{ profit }}</h7>
+    </div>
 
-    <a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a>
+    <div class="example-wrapper">
+        {% if cryptoData is not empty %}
+            <div class="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">My Crypto</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for crypto in cryptoData %}
+                            {% set walletAmount = attribute(wallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
+                            {% if walletAmount > 0 %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center crypto-item">
+                                            <img src="{{ crypto['iconUrl'] }}" alt="{{ crypto['name'] }}" class="crypto-logo mr-2">
+                                            <span>{{ crypto['name'] }}</span>
+                                            <span class="text-muted small ml-1">#{{ crypto['symbol'] }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ crypto['price']|number_format(3, '.', ',') }}€</td>
+                                    <td>{{ walletAmount }}</td>
+                                    <td>{{ (walletAmount * crypto.price)|number_format(3, '.', ',') }}€</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No data available.</p>
+        {% endif %}
+    </div>
 
-    {{ include('wallet/_delete_form.html.twig') }}
+    {# <a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a> #}
 {% endblock %}

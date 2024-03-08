@@ -1,94 +1,14 @@
-{# {% extends 'base.html.twig' %}
-
-    {% set totalCryptoBalance = 0 %}
-
-
-
-    {% for crypto in cryptoData %}
-            {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
-            {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price) %}
-    {% endfor %}
-
-    {% block money %}
-
-                    <li>Crypto valeur actuelle : ${{ totalCryptoBalance|number_format(3, '.', ',') }} </li>
-
-    {% endblock %}
-
-
-{% block body %}
-    <h1>Hello {{ app.user ? app.user.firstName : 'Guest' }}!</h1>
-    <h2>You have ${{ app.user.hasWallet.usablebalance }}</h2>
-
-    {% if app.user %}
-            <h3>Mange ton solde dans la tronche :  ${{ totalCryptoBalance|number_format(3, '.', ',') }}</h3>
-
-            <ul>
-                <li>Total Balance: {{ app.user.hasWallet.totalbalance }}</li>
-                <li>Argent d'achat: {{ app.user.hasWallet.usablebalance }}</li>
-                <li>Prix d'achat : {{ app.user.hasWallet.cryptobalance }}</li>
-                <li>Crypto valeur actuelle : ${{ totalCryptoBalance|number_format(3, '.', ',') }} </li>
-                <li>Benef : {{ (totalCryptoBalance - app.user.hasWallet.cryptobalance ?: 1)|number_format(3, '.', ',') }}$ soit {{ ((totalCryptoBalance - app.user.hasWallet.cryptobalance ?: 1) / (app.user.hasWallet.cryptobalance ?: 1) * 100)|number_format(1, '.', ',') }}%</li>
-                
-<ul>
-    {% for crypto in cryptoData %}
-        {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
-    <li>{{ crypto.name }}: ${{ (walletAmount * crypto.price)|number_format(3, '.', ',') }}</li>
-    {% endfor %}
-</ul>
-    {% endif %}
-    
-    <div class="example-wrapper">
-     <h1>Liste des Cryptos</h1>
-      {% if cryptoData is not empty %}
-<div class="container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Crypto</th>
-                <th scope="col">Price</th>
-                <th scope="col">Market Cap</th>
-                <th scope="col">24h Volume</th>
-                <th scope="col">Change (24h)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for crypto in cryptoData %}
-            <tr>
-                <td>
-                    <div class="d-flex align-items-center">
-                        <img src="{{ crypto['iconUrl'] }}" alt="{{ crypto['name'] }}" style="max-width: 32px; max-height: 32px;" class="mr-2">
-                        {{ crypto['name'] }}
-                    </div>
-                </td>
-                <td>{{ crypto['price'] }}€</td>
-                <td>{{ crypto['marketCap'] }}</td>
-                <td>{{ crypto['24hVolume'] }}</td>
-                <td>{{ crypto['change'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-    {% else %}
-        <p>No data available.</p>
-    {% endif %}
-</div>
-{% endblock %} #}
-
 {% extends 'base.html.twig' %}
 
 {% set totalCryptoBalance = 0 %}
 
 {% for crypto in cryptoData %}
     {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
-    {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price) %}
+    {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price)|number_format(3, '.', ',') %}
 {% endfor %}
+        {% set profit = (totalCryptoBalance - app.user.haswallet.cryptobalance ?: 1)|number_format(3, '.', ',') %}
 
-{% block money %}
-    <li>Crypto valeur actuelle : ${{ totalCryptoBalance|number_format(3, '.', ',') }} </li>
-{% endblock %}
+
 
 {% block stylesheets %}
     {{ parent() }}
@@ -122,22 +42,24 @@
 
 {% block body %}
     {% if app.user %}
-    <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-column align-items-center text-center">
-                            {# <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150"> #}
-                            <div class="mt-3">
-                                <h4 class="title">Total déposite : ${{ totalCryptoBalance|number_format(3, '.', ',') }}</h4>
-                                {# <p class="text-secondary mb-1">{{ user.job }}</p> #}
-                                {# <p class="text-muted font-size-sm">{{ user.location }}</p> #}
-                                <a class="btn btn-primary" href="{{ path('app_transaction_buy') }}">Buy</a>
-                                <a class="btn btn-outline-primary" href="{{ path('app_transaction_sell') }}" >Sell</a>
-                            </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-column align-items-start text-center">
+                <!-- Ligne supérieure -->
+                    <div class="d-flex justify-content-between align-items-center w-100 mb-3">
+                        <div>
+                            <h4 class="card-title d-flex justify-content-between align-items-center">Total Crypto Balance : {{ totalCryptoBalance }}€</h4>
                         </div>
+                        <a class="btn btn-primary ml-auto" href="{{ path('app_transaction_buy') }}">Buy</a>
+                    </div>
+                    <!-- Ligne inférieure -->
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <h7 class="{% if profit > 0 %}positive-change{% else %}negative-change{% endif %}">Profit : {{ profit }}</h7>
+                        <a class="btn btn-outline-primary ml-auto" href="{{ path('app_transaction_sell') }}">Sell</a>
                     </div>
                 </div>
             </div>
+
     {% endif %}
 
     <div class="example-wrapper">

@@ -26,82 +26,95 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserPasswordHasherInterface $userPasswordHasher,EntityManagerInterface $entityManager): Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user, ['is_new' => true]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
-
-            $wallet = new Wallet();
-            // Ajouter des logiques pour configurer le wallet selon vos besoins
-
-            // Associer le wallet Ã  l'utilisateur
-            $user->setHasWallet($wallet);
-            
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
+public function new(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+{
+    // Vérifier si l'utilisateur connecté est un administrateur
+    if (!$this->isGranted('ROLE_ADMIN')) {
+        throw new AccessDeniedException('Only administrators are allowed to create new users.');
     }
+
+    $user = new User();
+    $form = $this->createForm(UserType::class, $user, ['is_new' => true]);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $user->setPassword(
+            $userPasswordHasher->hashPassword(
+                $user,
+                $form->get('password')->getData()
+            )
+        );
+
+        $wallet = new Wallet();
+        // Ajouter des logiques pour configurer le wallet selon vos besoins
+
+        // Associer le wallet à l'utilisateur
+        $user->setHasWallet($wallet);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->render('user/new.html.twig', [
+        'user' => $user,
+        'form' => $form,
+    ]);
+}
+
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
+    $currentUser = $this->getUser();
+
+    // Vérifier si l'utilisateur connecté est un administrateur
+    if ($this->isGranted('ROLE_ADMIN') || $currentUser === $user) {
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, UserPasswordHasherInterface $userPasswordHasher, User $user, EntityManagerInterface $entityManager): Response
-    {
-        
+    throw new AccessDeniedException('You are not allowed to access other users\' profiles.');
+}
 
-        
-        $form = $this->createForm(UserType::class, $user, ['is_edit' => true]);
+   #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, UserPasswordHasherInterface $userPasswordHasher, User $user, EntityManagerInterface $entityManager): Response
+{
+    $currentUser = $this->getUser();
 
-        $form->handleRequest($request);
+    // Vérifier si l'utilisateur connecté est un administrateur ou l'utilisateur dont le profil est demandé
+    if (!$this->isGranted('ROLE_ADMIN') && $currentUser !== $user) {
+        throw new AccessDeniedException('You are not allowed to edit other users\' profiles.');
+    }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    $form = $this->createForm(UserType::class, $user, ['is_edit' => true]);
 
-        if ($this->getUser() == $user) {
+    $form->handleRequest($request);
 
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Si l'utilisateur connecté est l'utilisateur dont le profil est modifié, mettre à jour le mot de passe
+        if ($currentUser === $user) {
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('newPassword')->getData()
                 )
             );
-        } else {
-                throw new AccessDeniedException('You are not allowed to edit other users\' passwords.');
         }
 
-            $entityManager->flush();
+        $entityManager->flush();
 
-        return $this->redirectToRoute('app_user_show', ['id' => $this->getUser()->getId()], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
-            'button_label' => 'Update',
-
-        ]);
+        return $this->redirectToRoute('app_user_show', ['id' => $currentUser->getId()], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('user/edit.html.twig', [
+        'user' => $user,
+        'form' => $form->createView(),
+        'button_label' => 'Update',
+    ]);
+}
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response

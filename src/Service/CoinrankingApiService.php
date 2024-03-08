@@ -79,11 +79,11 @@ class CoinrankingApiService
     }
 
 
-    public function getCoinHistory(array $uuids): ?array
+    public function getCoinHistory(array $cryptoUUIDs): ?array
 {
     $historyData = [];
 
-    foreach ($uuids as $uuid) {
+    foreach ($cryptoUUIDs as $cryptoName => $uuid) {
         $curl = curl_init();
 
         curl_setopt_array($curl, [
@@ -109,7 +109,7 @@ class CoinrankingApiService
             $decodedResponse = json_decode($response, true);
 
             if (isset($decodedResponse['data']['history'])) {
-                $historyData[$uuid] = $decodedResponse['data']['history'];
+                $historyData[$cryptoName] = $decodedResponse['data']['history'];
             }
         }
     }

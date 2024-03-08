@@ -42,11 +42,6 @@
                     </td>                    <td>{{ transaction.type }}</td>
                     <td>{{ transaction.quantity }}</td>
                     <td>{{ transaction.amount }}</td>
-
-                    {# <td>
-                        <a href="{{ path('app_transaction_show', {'id': transaction.id}) }}">show</a>
-                        <a href="{{ path('app_transaction_edit', {'id': transaction.id}) }}">edit</a>
-                    </td> #}
                 </tr>
             {% endif %}
         {% else %}

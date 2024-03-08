@@ -53,34 +53,22 @@
             <li class="breadcrumb-item active" aria-current="page">My Wallet</li>
         </ol>
     </nav>
-    <!-- /Breadcrumb -->
-
-    {# <table class="table">
-        <tbody>
-            <tr>
-                <th>TotalBalance</th>
-                <td>{{ wallet.totalBalance }}</td>
-            </tr>
-            <tr>
-                <th>CryptoBalance</th>
-                <td>{{ wallet.cryptoBalance }}</td>
-            </tr>
-            <tr>
-                <th>UsableBalance</th>
-                <td>{{ wallet.usableBalance }}</td>
-            </tr>
-        </tbody>
-    </table> #}
-
     <div class="card" style="border-radius: 10px;">
     <div class="card-body">
-        <h5 class="card-title d-flex justify-content-between align-items-center  text-muted">
-        <span>Total Crypto Blance</span>
-        <div>
+        <div class="d-flex flex-column align-items-start text-center">
+         <!-- Ligne supérieure -->
+            <div class="d-flex justify-content-between align-items-center w-100 mb-3">
+                <div>
+                    <h4 class="card-title d-flex justify-content-between align-items-center">Total Crypto Balance : {{ totalCryptoBalance }}€</h4>
+                </div>
+                <a class="btn btn-primary ml-auto" href="{{ path('app_transaction_buy') }}">Buy</a>
+            </div>
+            <!-- Ligne inférieure -->
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <h7 class="{% if profit > 0 %}positive-change{% else %}negative-change{% endif %}">Profit : {{ profit }}</h7>
+                <a class="btn btn-outline-primary ml-auto" href="{{ path('app_transaction_sell') }}">Sell</a>
+            </div>
         </div>
-        </h5>
-        <h4 class="card-subtitle mb-2">{{ totalCryptoBalance }}€</h4>
-        <h7 class="{% if profit > 0 %}positive-change{% else %}negative-change{% endif %}">Profit : {{ profit }}</h7>
     </div>
 
     <div class="example-wrapper">

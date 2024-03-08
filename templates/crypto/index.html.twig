@@ -9,10 +9,10 @@
 
     {% if cryptoHistory is not empty %}
         {% for cryptoName, historyData in cryptoHistory %}
-            <div>
-                <h2>{{ cryptoName }} Price History</h2>
-                <canvas id="{{ cryptoName|lower }}Chart" width="400" height="200"></canvas>
-            </div>
+    <div>
+        <h2>{{ cryptoName }} Price History</h2>
+        <canvas id="{{ cryptoName|lower }}Chart" width="400" height="200"></canvas>
+    </div>
             <script>
                 function extractPrices(historyData) {
                     var prices = [];
@@ -56,7 +56,7 @@
                                     position: 'bottom'
                                 },
                                 y: {
-                                    beginAtZero: false
+                                    beginAtZero: true
                                 }
                             }
                         }

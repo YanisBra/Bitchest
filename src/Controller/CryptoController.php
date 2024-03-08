@@ -90,19 +90,23 @@ class CryptoController extends AbstractController
         }
 
          $cryptoUUIDs = [
-    'Qwsogvtv82FCd', // BTC
-    'razxDUgYGNAdQ', // ETH
-    '-l8Mn2pVlRs-p', // XRP
-    'qzawljRxB5bYu', // ADA
-    'ZlZpzOJo43mIo', // BCH
-    'D7B1x_ks7WhV5', // LTC
-    'f3iaFeCKEmkaZ', // XLM
-    'LtWwuVANwRzV_', // MIOTA
-    'C9DwH-T7MEGmo', // DASH
-    'DZtb-6X8yCx0h', // XEM
+    'Bitcoin' => 'Qwsogvtv82FCd', // BTC
+    'Ethereum' => 'razxDUgYGNAdQ', // ETH
+    'Ripple' => '-l8Mn2pVlRs-p', // XRP
+    'Cardano' => 'qzawljRxB5bYu', // ADA
+    'Bitcoin Cash' => 'ZlZpzOJo43mIo', // BCH
+    'Litecoin' => 'D7B1x_ks7WhV5', // LTC
+    'Stellar' => 'f3iaFeCKEmkaZ', // XLM
+    'IOTA' => 'LtWwuVANwRzV_', // MIOTA
+    'Dash' => 'C9DwH-T7MEGmo', // DASH
+    'NEM' => 'DZtb-6X8yCx0h', // XEM
 ];
 
+
+
+    
     $cryptoHistory = $coinrankingApiService->getCoinHistory($cryptoUUIDs);
+
 
     // Exécute les requêtes SQL pour sauvegarder les données (déplacé après le rendu)
     $entityManager->flush();

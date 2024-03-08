@@ -13,10 +13,8 @@ class HomeController extends AbstractController
     public function fetchData(CoinrankingApiService $coinrankingApiService): Response
     {
         
-        // Utilise le service pour récupérer les données des cryptos
         $CryptoData = $coinrankingApiService->getCryptoData();
 
-        // Retourne une réponse, par exemple une redirection ou une vue
         return $this->render('home/index.html.twig', ['cryptoData' => $CryptoData
         
     ]);

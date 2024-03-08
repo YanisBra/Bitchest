@@ -2,11 +2,13 @@
 
 {% set totalCryptoBalance = 0 %}
 
-{% for crypto in cryptoData %}
-    {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
-    {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price)|number_format(3, '.', ',') %}
-{% endfor %}
-        {% set profit = (totalCryptoBalance - app.user.haswallet.cryptobalance ?: 1)|number_format(3, '.', ',') %}
+{% if app.user %}
+    {% for crypto in cryptoData %}
+        {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
+        {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price)|number_format(3, '.', ',') %}
+    {% endfor %}
+        {% set profit = (totalCryptoBalance - app.user.haswallet.cryptobalance ?: 0)|number_format(3, '.', ',') %}
+{% endif %}
 
 
 
@@ -18,24 +20,42 @@
             max-height: 28px;
         }
 
-        /* Pour aligner verticalement les logos et les noms de cryptomonnaies */
         .crypto-item {
             display: flex;
             align-items: center;
         }
 
-        /* Ajoutez des marges entre les éléments si nécessaire */
         .crypto-item img {
             margin-right: 5px;
         }
 
-        /* Changement de couleur pour le changement sur 24h */
         .positive-change {
-            color: #00B053; /* Vert */
+            color: #00B053; 
         }
 
         .negative-change {
-            color: #EB0A24; /* Rouge */
+            color: #EB0A24;
+        }
+
+         .btn-primary {
+            background-color: var(--lightblue);
+            color: white;
+            border-color: var(--lightblue); 
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue); 
+            border-color: var(--blue); 
+        }
+
+         .btn-outline-primary {
+            color: var(--lightblue);
+            border-color: var(--lightblue); 
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--blue); 
+            border-color: var(--blue); 
         }
     </style>
 {% endblock %}
@@ -50,12 +70,12 @@
                         <div>
                             <h4 class="card-title d-flex justify-content-between align-items-center">Total Crypto Balance : {{ totalCryptoBalance }}€</h4>
                         </div>
-                        <a class="btn btn-primary ml-auto" href="{{ path('app_transaction_buy') }}">Buy</a>
+                        <a class="btn btn-primary ml-auto col-1" href="{{ path('app_transaction_buy') }}">Buy</a>
                     </div>
                     <!-- Ligne inférieure -->
                     <div class="d-flex justify-content-between align-items-center w-100">
                         <h7 class="{% if profit > 0 %}positive-change{% else %}negative-change{% endif %}">Profit : {{ profit }}</h7>
-                        <a class="btn btn-outline-primary ml-auto" href="{{ path('app_transaction_sell') }}">Sell</a>
+                        <a class="btn btn-outline-primary ml-auto col-1" href="{{ path('app_transaction_sell') }}">Sell</a>
                     </div>
                 </div>
             </div>

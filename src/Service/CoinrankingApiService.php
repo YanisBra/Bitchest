@@ -44,7 +44,7 @@ class CoinrankingApiService
         curl_close($curl);
 
         if ($err) {
-            return null; // Gestion de l'erreur de requête cURL
+            return null;
         } else {
             $cryptoData = json_decode($response, true)['data']['coins'];
             $filteredCryptoData = array_filter($cryptoData, function ($crypto) {
@@ -58,15 +58,12 @@ class CoinrankingApiService
 
                 if ($existingCrypto) {
                     $existingCrypto->setPrice($crypto['price']);
-                    // Mettre à jour d'autres propriétés si nécessaire
                 } else {
                     $newCrypto = new Crypto();
                     $newCrypto->setName($crypto['name']);
                     $newCrypto->setSymbol($crypto['symbol']);
                     $newCrypto->setPrice($crypto['price']);
                     $newCrypto->setIcon($crypto['iconUrl']);
-
-                    // Initialiser d'autres propriétés si nécessaire
 
                     $entityManager->persist($newCrypto);
                 }

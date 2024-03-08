@@ -31,15 +31,9 @@ class RegistrationController extends AbstractController
             );
 
             $wallet = new Wallet();
-            // Ajouter des logiques pour configurer le wallet selon vos besoins
-
-            // Associer le wallet à l'utilisateur
             $user->setHasWallet($wallet);
-            
-
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
 
             return $this->redirectToRoute('app_home');
         }

@@ -28,7 +28,6 @@ class UserController extends AbstractController
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
 public function new(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
 {
-    // Vérifier si l'utilisateur connecté est un administrateur
     if (!$this->isGranted('ROLE_ADMIN')) {
         throw new AccessDeniedException('Only administrators are allowed to create new users.');
     }
@@ -46,11 +45,7 @@ public function new(Request $request, UserPasswordHasherInterface $userPasswordH
         );
 
         $wallet = new Wallet();
-        // Ajouter des logiques pour configurer le wallet selon vos besoins
-
-        // Associer le wallet à l'utilisateur
         $user->setHasWallet($wallet);
-
         $entityManager->persist($user);
         $entityManager->flush();
 
@@ -69,7 +64,6 @@ public function new(Request $request, UserPasswordHasherInterface $userPasswordH
     {
     $currentUser = $this->getUser();
 
-    // Vérifier si l'utilisateur connecté est un administrateur
     if ($this->isGranted('ROLE_ADMIN') || $currentUser === $user) {
         return $this->render('user/show.html.twig', [
             'user' => $user,
@@ -84,7 +78,6 @@ public function edit(Request $request, UserPasswordHasherInterface $userPassword
 {
     $currentUser = $this->getUser();
 
-    // Vérifier si l'utilisateur connecté est un administrateur ou l'utilisateur dont le profil est demandé
     if (!$this->isGranted('ROLE_ADMIN') && $currentUser !== $user) {
         throw new AccessDeniedException('You are not allowed to edit other users\' profiles.');
     }
@@ -94,7 +87,6 @@ public function edit(Request $request, UserPasswordHasherInterface $userPassword
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // Si l'utilisateur connecté est l'utilisateur dont le profil est modifié, mettre à jour le mot de passe
         if ($currentUser === $user) {
             $user->setPassword(
                 $userPasswordHasher->hashPassword(

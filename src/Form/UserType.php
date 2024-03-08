@@ -9,14 +9,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TextType; // Ajout de TextType
-use Symfony\Component\Form\Extension\Core\Type\HiddenType; // Ajouter le type HiddenType en utilisant le namespace approprié
+use Symfony\Component\Form\Extension\Core\Type\TextType; 
+use Symfony\Component\Form\Extension\Core\Type\HiddenType; 
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
-    // Génère un mot de passe aléatoire de 12 caractères
     private function genererMotDePasseAleatoire()
     {
         $caracteresPermis = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -38,7 +37,6 @@ class UserType extends AbstractType
             ->add('lastName')
             ->add('email', EmailType::class);
 
-        // Ajoute le champ password uniquement si le formulaire n'est pas en mode édition
         if (!$options['is_edit']) {
             $builder->add('password', HiddenType::class, [
                 'data' => $randomPassword,
@@ -50,8 +48,6 @@ class UserType extends AbstractType
             ]);
         }
 
-
-        // Ajoute le champ roles uniquement si le formulaire n'est pas en mode édition
         if (!$options['is_edit']) {
             $builder->add('roles', ChoiceType::class, [
                 'choices' => [
@@ -81,7 +77,6 @@ class UserType extends AbstractType
             ]);
         }
 
-        // Ajoute le champ motDePasseGenere uniquement si le formulaire n'est pas en mode édition
         if (!$options['is_edit']) {
             $builder->add('motDePasseGenere', TextType::class, [
                 'attr' => [
@@ -99,7 +94,7 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'is_edit' => false,
-            'is_new' => false, // Ajoutez cette ligne pour définir l'option "is_new"
+            'is_new' => false, 
         ]);
     }
 }

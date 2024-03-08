@@ -1,5 +1,37 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+
+         .btn-primary {
+            background-color: var(--lightblue);
+            color: white;
+            border-color: var(--lightblue); 
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue); 
+            border-color: var(--blue); 
+        }
+
+         .btn-outline-primary {
+            color: var(--lightblue);
+            border-color: var(--lightblue); 
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--blue); 
+            border-color: var(--blue); 
+        }
+
+        .button{
+            margin-top:20px;
+        }
+
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container">
 
@@ -26,12 +58,9 @@
                     </h5>
                     <form method="post">
                         {{ form_start(form) }}
-                        {# {{ form_row(form._token) }}  #}
-
                         <div class="form-group row">
                             <label for="amount" class="col-sm-4 col-form-label">Amount</label>
                             <div class="col-sm-8">
-                                {# <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount"> #}
                             {{ form_widget(form.amount, {'attr': {'class': 'form-control'}}) }}
 
                             </div>
@@ -51,21 +80,17 @@
                             </div>
                         </div>
 
-                        
-                        <div class="col-sm-12 text-center mt-12"> <!-- Ajoutez la classe 'text-center' pour centrer les éléments -->
-                            <button type="submit" class="btn btn-primary">
+                        <div class="col-sm-12 text-center button"> 
+                            <button type="submit" class="btn btn-primary col-1">
                                 {% if app.request.attributes.get('_route') == 'app_transaction_buy' %}
                                     Buy
                                 {% else %}
                                     Sell
                                 {% endif %}
                             </button>
-                            <a href="{{ path('app_transaction_index') }}" class="btn btn-secondary">Cancel</a>
+                            <a href="{{ path('app_transaction_index') }}" class="btn btn-outline-primary col-1">Cancel</a>
                         </div>
                             {{ form_end(form) }}
-                                                        {# {{ include('transaction/_form.html.twig') }} #}
-
-
                     </form>
                 </div>
             </div>

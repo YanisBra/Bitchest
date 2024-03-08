@@ -31,10 +31,8 @@ class CryptoController extends AbstractController
 
     $cryptoHistory = $coinrankingApiService->getCoinHistory($cryptoUUIDs);
 
-    // Exécute les requêtes SQL pour sauvegarder les données (déplacé après le rendu)
     $entityManager->flush();
 
-    // Passer les données d'historique au template Twig
     return $this->render('crypto/index.html.twig', [
         'cryptoHistory' => $cryptoHistory,
     ]);

@@ -10,7 +10,6 @@
         <thead>
             <tr>
                 <th>Id</th>
-                {# <th>User</th> #}
                 <th>TotalBalance</th>
                 <th>CryptoBalance</th>
                 <th>UsableBalance</th>
@@ -32,7 +31,6 @@
             {% if is_granted('ROLE_ADMIN') or app.user.hasWallet == wallet %}
                 <tr>
                     <td>{{ wallet.id }}</td>
-                    {# <td>{{ wallet.user.firstName }}</td> #}
                     <td>{{ wallet.totalBalance }}</td>
                     <td>{{ wallet.cryptoBalance }}</td>
                     <td>{{ wallet.usableBalance }}</td>

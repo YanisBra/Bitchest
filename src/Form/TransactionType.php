@@ -41,14 +41,11 @@ class TransactionType extends AbstractType
                 /** @var Transaction $transaction */
                 $transaction = $event->getData();
 
-                // Récupérer le montant et le prix de la crypto sélectionnée
                 $amount = $transaction->getAmount();
                 $cryptoPrice = $transaction->getCryptocurrency()->getPrice();
 
-                // Calculer la quantité
                 $quantity = $amount / $cryptoPrice;
 
-                // Stocker la quantité calculée dans l'objet Transaction
                 $transaction->setQuantity($quantity);
             });
     }

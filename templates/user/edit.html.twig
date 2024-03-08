@@ -1,5 +1,22 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+         .btn-primary {
+            background-color: var(--lightblue);
+            color: white;
+            border-color: var(--lightblue); 
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue); 
+            border-color: var(--blue); 
+        }
+
+    </style>
+{% endblock %}
+
 {% block title %}User Profile{% endblock %}
 
 {% block body %}
@@ -78,8 +95,7 @@
                         {% if is_granted('ROLE_ADMIN') %}
 
                             {{ include('user/_delete_form.html.twig') }}
-{% endif %}
-
+                        {% endif %}
                     </div>
                 </div>
             </div>

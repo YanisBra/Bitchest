@@ -28,7 +28,6 @@ class WalletController extends AbstractController
     #[Route('/new', name: 'app_wallet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Vérifier si l'utilisateur connecté est un administrateur
         if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedHttpException('Only administrators are allowed to create new wallets.');
         }
@@ -67,7 +66,6 @@ class WalletController extends AbstractController
     #[Route('/{id}/edit', name: 'app_wallet_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Wallet $wallet, EntityManagerInterface $entityManager): Response
     {
-        // Vérifier si l'utilisateur connecté est un administrateur
         if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedHttpException('Only administrators are allowed to edit wallets.');
         }

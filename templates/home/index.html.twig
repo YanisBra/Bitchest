@@ -2,19 +2,26 @@
 
 {% set totalCryptoBalance = 0 %}
 
+{# Vérifier si l'utilisateur est authentifié #}
 {% if app.user %}
+    {# Boucler à travers le tableau cryptoData #}
     {% for crypto in cryptoData %}
+        {# Définir la variable walletAmount en utilisant le portefeuille de l'utilisateur et les données crypto #}
         {% set walletAmount = attribute(app.user.hasWallet, crypto.name|lower|replace({' ': ''})) ?? 0 %}
+        
+        {# Mettre à jour totalCryptoBalance en ajoutant le produit de walletAmount et du prix crypto #}
         {% set totalCryptoBalance = totalCryptoBalance + (walletAmount * crypto.price)|number_format(3, '.', ',') %}
     {% endfor %}
-        {% set profit = (totalCryptoBalance - app.user.haswallet.cryptobalance ?: 0)|number_format(3, '.', ',') %}
+    
+    {# Calculer le profit en soustrayant le solde crypto du portefeuille de l'utilisateur de totalCryptoBalance #}
+    {% set profit = (totalCryptoBalance - app.user.haswallet.cryptobalance ?: 0)|number_format(3, '.', ',') %}
 {% endif %}
 
-
-
+{# Remplacer le bloc stylesheets #}
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        /* Styles personnalisés pour la page */
         .crypto-logo {
             max-width: 28px;
             max-height: 28px;
@@ -25,63 +32,68 @@
             align-items: center;
         }
 
-        .crypto-item img {
-            margin-right: 5px;
-        }
-
+        /* Styles pour le changement positif et négatif */
         .positive-change {
-            color: #00B053; 
+            color: #00B053;
         }
 
         .negative-change {
             color: #EB0A24;
         }
 
-         .btn-primary {
+        /* Styles de bouton personnalisés */
+        .btn-primary {
             background-color: var(--lightblue);
             color: white;
-            border-color: var(--lightblue); 
+            border-color: var(--lightblue);
         }
 
         .btn-primary:hover {
-            background-color: var(--blue); 
-            border-color: var(--blue); 
+            background-color: var(--blue);
+            border-color: var(--blue);
         }
 
-         .btn-outline-primary {
+        .btn-outline-primary {
             color: var(--lightblue);
-            border-color: var(--lightblue); 
+            border-color: var(--lightblue);
         }
 
         .btn-outline-primary:hover {
-            background-color: var(--blue); 
-            border-color: var(--blue); 
+            background-color: var(--blue);
+            border-color: var(--blue);
         }
     </style>
 {% endblock %}
 
+{# Remplacer le bloc body #}
 {% block body %}
+    {# Vérifier si l'utilisateur est authentifié #}
     {% if app.user %}
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-column align-items-start text-center">
-                <!-- Ligne supérieure -->
+                    <!-- Ligne supérieure -->
                     <div class="d-flex justify-content-between align-items-center w-100 mb-3">
                         <div>
-                            <h4 class="card-title d-flex justify-content-between align-items-center">Total Crypto Balance : {{ totalCryptoBalance }}€</h4>
+                            <!-- Afficher totalCryptoBalance avec le symbole Euro -->
+                            <h4 class="card-title d-flex justify-content-between align-items-center">Solde Total des Cryptos : {{ totalCryptoBalance }}€</h4>
                         </div>
-                        <a class="btn btn-primary ml-auto col-1" href="{{ path('app_transaction_buy') }}">Buy</a>
+                        <!-- Bouton "Acheter" avec un lien vers la route app_transaction_buy -->
+                        <a class="btn btn-primary ml-auto col-1" href="{{ path('app_transaction_buy') }}">Acheter</a>
                     </div>
                     <!-- Ligne inférieure -->
                     <div class="d-flex justify-content-between align-items-center w-100">
+                        <!-- Afficher le profit avec un style approprié en fonction du changement positif ou négatif -->
                         <h7 class="{% if profit > 0 %}positive-change{% else %}negative-change{% endif %}">Profit : {{ profit }}</h7>
-                        <a class="btn btn-outline-primary ml-auto col-1" href="{{ path('app_transaction_sell') }}">Sell</a>
+                        <!-- Bouton "Vendre" avec un lien vers la route app_transaction_sell -->
+                        <a class="btn btn-outline-primary ml-auto col-1" href="{{ path('app_transaction_sell') }}">Vendre</a>
                     </div>
                 </div>
             </div>
-
+        </div>
     {% endif %}
 
+    <!-- Afficher le tableau cryptoData -->
     <div class="example-wrapper">
         {% if cryptoData is not empty %}
             <div class="container">
@@ -89,23 +101,27 @@
                     <thead>
                         <tr>
                             <th scope="col">Crypto</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Market Cap</th>
-                            <th scope="col">Change (24h)</th>
+                            <th scope="col">Prix</th>
+                            <th scope="col">Capitalisation Boursière</th>
+                            <th scope="col">Changement (24h)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for crypto in cryptoData %}
                             <tr>
                                 <td>
+                                    <!-- Afficher le logo, le nom et le symbole crypto -->
                                     <div class="d-flex align-items-center crypto-item">
                                         <img src="{{ crypto['iconUrl'] }}" alt="{{ crypto['name'] }}" class="crypto-logo mr-2">
                                         <span>{{ crypto['name'] }}</span>
                                         <span class="text-muted small ml-1">#{{ crypto['symbol'] }}</span>
                                     </div>
                                 </td>
+                                <!-- Afficher le prix crypto avec le symbole Euro -->
                                 <td>{{ crypto['price']|number_format(3, '.', ',') }}€</td>
+                                <!-- Afficher la capitalisation boursière crypto avec le symbole Euro -->
                                 <td>{{ crypto['marketCap'] }}€</td>
+                                <!-- Afficher le changement crypto avec un style approprié en fonction du changement positif ou négatif -->
                                 <td class="{% if crypto['change'] > 0 %}positive-change{% else %}negative-change{% endif %}">{{ crypto['change'] }}%</td>
                             </tr>
                         {% endfor %}
@@ -113,7 +129,8 @@
                 </table>
             </div>
         {% else %}
-            <p>No data available.</p>
+            <!-- Afficher un message s'il n'y a pas de données disponibles -->
+            <p>Aucune donnée disponible.</p>
         {% endif %}
     </div>
 {% endblock %}

@@ -7,19 +7,25 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CoinrankingApiService
 {
-
     private $entityManager;
     private $allowedCryptoSymbols;
 
-
+    /**
+     * Constructeur de la classe CoinrankingApiService.
+     *
+     * @param EntityManagerInterface $entityManager Le gestionnaire d'entité Doctrine.
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->allowedCryptoSymbols = ['BTC', 'ETH', 'XRP', 'BCH', 'ADA', 'LTC', 'XEM', 'XLM', 'MIOTA', 'DASH'];
-
     }
 
-
+    /**
+     * Récupère les données des cryptomonnaies depuis l'API Coinranking.
+     *
+     * @return array|null Les données des cryptomonnaies filtrées par les symboles autorisés.
+     */
     public function getCryptoData(): ?array
     {
         $curl = curl_init();
@@ -75,42 +81,48 @@ class CoinrankingApiService
         }
     }
 
+    /**
+     * Récupère l'historique des prix d'une liste de cryptomonnaies depuis l'API Coinranking.
+     *
+     * @param array $cryptoUUIDs Un tableau associatif avec le nom de la cryptomonnaie en tant que clé et l'UUID en tant que valeur.
+     *
+     * @return array|null Les données d'historique des prix pour chaque cryptomonnaie.
+     */
     public function getCoinHistory(array $cryptoUUIDs): ?array
-{
-    $historyData = [];
+    {
+        $historyData = [];
 
-    foreach ($cryptoUUIDs as $cryptoName => $uuid) {
-        $curl = curl_init();
+        foreach ($cryptoUUIDs as $cryptoName => $uuid) {
+            $curl = curl_init();
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://coinranking1.p.rapidapi.com/coin/{$uuid}/history?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=30d",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => [
-                "X-RapidAPI-Host: coinranking1.p.rapidapi.com",
-                "X-RapidAPI-Key: e4572342c9msh6144f178c7823b4p1aa0f9jsn6284d6bdc09b"
-            ],
-        ]);
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://coinranking1.p.rapidapi.com/coin/{$uuid}/history?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=30d",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => [
+                    "X-RapidAPI-Host: coinranking1.p.rapidapi.com",
+                    "X-RapidAPI-Key: e4572342c9msh6144f178c7823b4p1aa0f9jsn6284d6bdc09b"
+                ],
+            ]);
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
 
-        curl_close($curl);
+            curl_close($curl);
 
-        if (!$err) {
-            $decodedResponse = json_decode($response, true);
+            if (!$err) {
+                $decodedResponse = json_decode($response, true);
 
-            if (isset($decodedResponse['data']['history'])) {
-                $historyData[$cryptoName] = $decodedResponse['data']['history'];
+                if (isset($decodedResponse['data']['history'])) {
+                    $historyData[$cryptoName] = $decodedResponse['data']['history'];
+                }
             }
         }
-    }
 
-    return $historyData;
-}
-        
+        return $historyData;
+    }
 }

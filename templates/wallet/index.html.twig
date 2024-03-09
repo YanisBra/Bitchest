@@ -1,9 +1,36 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+         .btn-primary {
+            background-color: var(--lightblue);
+            color: white;
+            border-color: var(--lightblue);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue); 
+            border-color: var(--blue);
+        }
+
+    </style>
+{% endblock %}
+
 {% block title %}Wallet index{% endblock %}
 
 {% block body %}
     <h1>Wallet index</h1>
+
+
     
 
     <table class="table">
@@ -44,9 +71,9 @@
                     <td>{{ wallet.iota }}</td>
                     <td>{{ wallet.dash }}</td>
                     <td>{{ wallet.nem }}</td>
-                    <td>
-                        <a href="{{ path('app_wallet_show', {'id': wallet.id}) }}">show</a>
-                        <a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a>
+                    <td class="button">
+                        <a class="btn btn-primary ml-auto" href="{{ path('app_wallet_show', {'id': wallet.id}) }}">show</a>
+                        <a class="btn btn-primary ml-auto" href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a>
                     </td>
                 </tr>
             {% endif %}

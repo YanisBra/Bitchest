@@ -13,10 +13,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-
+/**
+ * Contrôleur gérant les opérations liées aux portefeuilles (Wallet) des utilisateurs.
+ */
 #[Route('/wallet')]
 class WalletController extends AbstractController
 {
+    /**
+     * Affiche la liste des portefeuilles.
+     *
+     * @param WalletRepository $walletRepository Le repository des portefeuilles.
+     * @return Response La réponse HTTP contenant la liste des portefeuilles.
+     */
     #[Route('/', name: 'app_wallet_index', methods: ['GET'])]
     public function index(WalletRepository $walletRepository): Response
     {
@@ -25,11 +33,19 @@ class WalletController extends AbstractController
         ]);
     }
 
+    /**
+     * Permet de créer un nouveau portefeuille.
+     *
+     * @param Request $request La requête HTTP.
+     * @param EntityManagerInterface $entityManager Le gestionnaire d'entités.
+     * @return Response La réponse HTTP après création du portefeuille.
+     * @throws AccessDeniedHttpException Exception si l'utilisateur n'a pas le rôle d'administrateur.
+     */
     #[Route('/new', name: 'app_wallet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedHttpException('Only administrators are allowed to create new wallets.');
+            throw new AccessDeniedHttpException('Seuls les administrateurs sont autorisés à créer de nouveaux portefeuilles.');
         }
 
         $wallet = new Wallet();
@@ -49,25 +65,38 @@ class WalletController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche les détails d'un portefeuille et les données sur les cryptomonnaies.
+     *
+     * @param Wallet $wallet Le portefeuille à afficher.
+     * @param CoinrankingApiService $coinrankingApiService Le service d'API Coinranking.
+     * @return Response La réponse HTTP contenant les détails du portefeuille et les données sur les cryptomonnaies.
+     */
     #[Route('/{id}', name: 'app_wallet_show', methods: ['GET'])]
     public function show(Wallet $wallet, CoinrankingApiService $coinrankingApiService): Response
-
     {
-
-        $CryptoData = $coinrankingApiService->getCryptoData();
-
+        $cryptoData = $coinrankingApiService->getCryptoData();
 
         return $this->render('wallet/show.html.twig', [
             'wallet' => $wallet,
-            'cryptoData' => $CryptoData
+            'cryptoData' => $cryptoData,
         ]);
     }
 
+    /**
+     * Permet de modifier un portefeuille existant.
+     *
+     * @param Request $request La requête HTTP.
+     * @param Wallet $wallet Le portefeuille à modifier.
+     * @param EntityManagerInterface $entityManager Le gestionnaire d'entités.
+     * @return Response La réponse HTTP après modification du portefeuille.
+     * @throws AccessDeniedHttpException Exception si l'utilisateur n'a pas le rôle d'administrateur.
+     */
     #[Route('/{id}/edit', name: 'app_wallet_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Wallet $wallet, EntityManagerInterface $entityManager): Response
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedHttpException('Only administrators are allowed to edit wallets.');
+            throw new AccessDeniedHttpException('Seuls les administrateurs sont autorisés à modifier les portefeuilles.');
         }
 
         $form = $this->createForm(WalletType::class, $wallet);
@@ -85,7 +114,14 @@ class WalletController extends AbstractController
         ]);
     }
 
-
+    /**
+     * Supprime un portefeuille.
+     *
+     * @param Request $request La requête HTTP.
+     * @param Wallet $wallet Le portefeuille à supprimer.
+     * @param EntityManagerInterface $entityManager Le gestionnaire d'entités.
+     * @return Response La réponse HTTP après suppression du portefeuille.
+     */
     #[Route('/{id}', name: 'app_wallet_delete', methods: ['POST'])]
     public function delete(Request $request, Wallet $wallet, EntityManagerInterface $entityManager): Response
     {

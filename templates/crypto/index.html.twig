@@ -1,17 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cryptocurrency Price History{% endblock %}
+{% block title %}Historique des prix des cryptomonnaies{% endblock %}
 
 {% block body %}
-    <h1>Cryptocurrency Price History</h1>
+    <h1>Historique des prix des cryptomonnaies</h1>
 
     {% if cryptoHistory is not empty %}
+        {# Boucle à travers les données de l'historique des cryptomonnaies #}
         {% for cryptoName, historyData in cryptoHistory %}
-    <div>
-        <h2>{{ cryptoName }} Price History</h2>
-        <canvas id="{{ cryptoName|lower }}Chart" width="400" height="200"></canvas>
-    </div>
+            <div>
+                <h2>{{ cryptoName }} Historique des prix</h2>
+                {# Créer un canevas avec un ID basé sur le nom de la cryptomonnaie en minuscules #}
+                <canvas id="{{ cryptoName|lower }}Chart" width="400" height="200"></canvas>
+            </div>
             <script>
+                // Fonction pour extraire les prix de l'historique des prix
                 function extractPrices(historyData) {
                     var prices = [];
                     for (var i = 0; i < historyData.length; i++) {
@@ -20,6 +23,7 @@
                     return prices;
                 }
 
+                // Fonction pour extraire les horodatages de l'historique des prix
                 function extractTimestamps(historyData) {
                     var timestamps = [];
                     for (var i = 0; i < historyData.length; i++) {
@@ -28,17 +32,21 @@
                     return timestamps;
                 }
 
+                // Événement DOMContentLoaded pour s'assurer que le DOM est entièrement chargé
                 document.addEventListener("DOMContentLoaded", function() {
+                    // Obtenir le contexte du canevas avec l'ID basé sur le nom de la cryptomonnaie en minuscules
                     var ctx = document.getElementById("{{ cryptoName|lower }}Chart").getContext('2d');
+                    // Extraire les prix et horodatages de l'historique des prix
                     var prices = extractPrices({{ historyData|json_encode|raw }});
                     var timestamps = extractTimestamps({{ historyData|json_encode|raw }});
                     
+                    // Créer un graphique linéaire avec Chart.js
                     var myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: timestamps,
                             datasets: [{
-                                label: 'Price History',
+                                label: 'Historique des prix',
                                 data: prices,
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 borderWidth: 1,
@@ -63,6 +71,7 @@
             </script>
         {% endfor %}
     {% else %}
-        <p>No price history data available.</p>
+        <!-- Afficher un message s'il n'y a pas de données d'historique des prix disponibles -->
+        <p>Aucune donnée d'historique des prix disponible.</p>
     {% endif %}
 {% endblock %}

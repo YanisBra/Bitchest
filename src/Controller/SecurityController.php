@@ -7,23 +7,39 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * Contrôleur gérant les fonctionnalités de sécurité, notamment la connexion et la déconnexion.
+ */
 class SecurityController extends AbstractController
 {
+    /**
+     * Gère le processus de connexion des utilisateurs.
+     *
+     * @param AuthenticationUtils $authenticationUtils Utilitaire d'authentification pour récupérer les erreurs de connexion.
+     * @return Response La réponse HTTP pour la page de connexion.
+     */
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // Vérifie si l'utilisateur est déjà connecté, redirige le cas échéant
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
         // }
 
-        // get the login error if there is one
+        // Récupère l'éventuelle erreur de connexion
         $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
+        // Récupère le dernier nom d'utilisateur saisi par l'utilisateur
         $lastUsername = $authenticationUtils->getLastUsername();
 
+        // Affiche la page de connexion avec les informations nécessaires
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
+    /**
+     * Gère le processus de déconnexion des utilisateurs.
+     *
+     * @throws \LogicException Cette méthode peut être vide, car elle sera interceptée par la clé de déconnexion de votre pare-feu.
+     */
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

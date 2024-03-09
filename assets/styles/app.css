@@ -1,3 +1,9 @@
-body {
-  background-color: ;
+:root {
+  --white: white;
+  --green: #01ff19;
+  --red: #ff5964;
+  --blue: #38618c;
+  --lightblue: #35a7ff;
+  font-family: Celias;
+  background-color: red;
 }

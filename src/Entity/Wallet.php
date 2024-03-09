@@ -57,7 +57,6 @@ class Wallet
 
     public function __construct()
     {
-        // Initialiser les propriétés dans le constructeur si nécessaire
         $this->totalBalance = $this->calculateTotalBalance();
     }
 
@@ -86,8 +85,7 @@ class Wallet
     public function setCryptoBalance(float $cryptoBalance): static
     {
         $this->cryptoBalance = $cryptoBalance;
-        $this->totalBalance = $this->calculateTotalBalance(); // Mettez à jour totalBalance
-
+        $this->totalBalance = $this->calculateTotalBalance();
         return $this;
     }
 
@@ -99,7 +97,7 @@ class Wallet
     public function setUsableBalance(float $usableBalance): static
     {
         $this->usableBalance = $usableBalance;
-        $this->totalBalance = $this->calculateTotalBalance(); // Mettez à jour totalBalance
+        $this->totalBalance = $this->calculateTotalBalance(); 
 
         return $this;
     }
@@ -116,7 +114,6 @@ class Wallet
 
     public function setBitcoin(float $bitcoin): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->bitcoin = round($bitcoin, 5);
 
         return $this;
@@ -129,7 +126,6 @@ class Wallet
 
     public function setEthereum(float $Ethereum): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->Ethereum = round($Ethereum, 5);
 
         return $this;
@@ -142,7 +138,6 @@ class Wallet
 
     public function setXRP(float $XRP): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->XRP = round($XRP, 5);
 
         return $this;
@@ -155,7 +150,6 @@ class Wallet
 
     public function setCardano(float $cardano): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->cardano = round($cardano, 5);
 
         return $this;
@@ -168,7 +162,6 @@ class Wallet
 
     public function setLitecoin(float $litecoin): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->litecoin = round($litecoin, 5);
 
         return $this;
@@ -181,7 +174,6 @@ class Wallet
 
     public function setBitcoinCash(float $bitcoin_cash): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->bitcoin_cash = round($bitcoin_cash, 5);
 
         return $this;
@@ -194,7 +186,6 @@ class Wallet
 
     public function setStellar(float $stellar): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->stellar = round($stellar, 5);
 
         return $this;
@@ -207,7 +198,6 @@ class Wallet
 
     public function setIota(float $iota): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->iota = round($iota, 5);
 
         return $this;
@@ -220,7 +210,6 @@ class Wallet
 
     public function setDash(float $dash): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->dash = round($dash, 5);
 
         return $this;
@@ -233,7 +222,6 @@ class Wallet
 
     public function setNem(float $nem): static
     {
-        // Arrondir le prix à trois chiffres après la virgule
         $this->nem = round($nem, 5);
 
         return $this;

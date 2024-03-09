@@ -29,7 +29,7 @@ class TransactionController extends AbstractController
 public function buy(Request $request, EntityManagerInterface $entityManager): Response
 {
     $transaction = new Transaction();
-    $transaction->setType('Buy'); // Définir automatiquement le type comme "Buy"
+    $transaction->setType('Buy'); 
     $form = $this->createForm(TransactionType::class, $transaction);
     $form->handleRequest($request);
 
@@ -41,36 +41,27 @@ public function buy(Request $request, EntityManagerInterface $entityManager): Re
         $transactionAmount = $transaction->getAmount();
         $usableBalance = $wallet->getUsableBalance();
 
-        // Vérifier si le montant de la transaction est inférieur ou égal au solde utilisable
         if ($transactionAmount <= $usableBalance) {
 
-        // Mettre à jour le champ correspondant dans le wallet
         $fieldName = strtolower(str_replace(' ', '', $crypto->getName()));
-        $currentAmount = $wallet->{"get$fieldName"}(); // Récupérer la valeur actuelle
-        $newAmount = $currentAmount + $quantity; // Ajouter la quantité de la transaction
-        $wallet->{"set$fieldName"}($newAmount); // Mettre à jour le champ dans le wallet
+        $currentAmount = $wallet->{"get$fieldName"}(); 
+        $newAmount = $currentAmount + $quantity; 
+        $wallet->{"set$fieldName"}($newAmount); 
 
-        // Mettre à jour le solde utilisable
         $usableBalance = $wallet->getUsableBalance();
         $newUsableBalance = $usableBalance - $transactionAmount;
         $wallet->setUsableBalance($newUsableBalance);
 
-        // Mettre à jour le solde de crypto
         $cryptoBalance = $wallet->getCryptoBalance();
         $newCryptoBalance = $cryptoBalance + $transactionAmount;
         $wallet->setCryptoBalance($newCryptoBalance);
 
-        // Persistez les modifications apportées au portefeuille
         $entityManager->persist($wallet);
-
-        // Enregistrez la transaction dans la base de données
         $entityManager->persist($transaction);
         $entityManager->flush();
 
         return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
     } else {
-             // Gérer le cas où le montant de la transaction est supérieur au solde utilisable
-             // Par exemple, afficher un message d'erreur à l'utilisateur
              $this->addFlash('error', 'Le montant de la transaction dépasse votre solde utilisable.');
          }
      }
@@ -85,7 +76,7 @@ public function buy(Request $request, EntityManagerInterface $entityManager): Re
 public function sell(Request $request, EntityManagerInterface $entityManager): Response
 {
     $transaction = new Transaction();
-    $transaction->setType('Sell'); // Définir automatiquement le type comme "Sell"
+    $transaction->setType('Sell'); 
     $form = $this->createForm(TransactionType::class, $transaction);
     $form->handleRequest($request);
 
@@ -95,40 +86,33 @@ public function sell(Request $request, EntityManagerInterface $entityManager): R
         $crypto = $transaction->getCryptocurrency();
         $transactionAmount = $transaction->getAmount();
         $cryptoBalance = $wallet->getCryptoBalance();
-        $currentPrice = $crypto->getPrice(); // Supposons que vous avez une méthode getPrice() dans votre entité Crypto pour obtenir le prix actuel
-        $fieldName = strtolower(str_replace(' ', '', $crypto->getName())); // Correction de la variable $fieldName
-        $quantity = $wallet->{"get$fieldName"}(); // Correction de la récupération de la quantité de crypto-monnaie dans le portefeuille
+        $currentPrice = $crypto->getPrice(); 
+        $fieldName = strtolower(str_replace(' ', '', $crypto->getName())); 
+        $quantity = $wallet->{"get$fieldName"}(); 
 
-        if ($transactionAmount <= $quantity * $currentPrice) { // Correction de la variable $currentPrice
-            // Mettre à jour le champ correspondant dans le wallet
-            $currentAmount = $wallet->{"get$fieldName"}(); // Récupérer la valeur actuelle
-            $newAmount = $currentAmount - $transactionAmount / $currentPrice; // Soustraire la quantité de la transaction (en termes de crypto-monnaie)
-            $wallet->{"set$fieldName"}($newAmount); // Mettre à jour le champ dans le wallet
+        if ($transactionAmount <= $quantity * $currentPrice) { 
+            $currentAmount = $wallet->{"get$fieldName"}(); 
+            $newAmount = $currentAmount - $transactionAmount / $currentPrice; 
+            $wallet->{"set$fieldName"}($newAmount); 
 
-            // Mettre à jour le solde utilisable
             $usableBalance = $wallet->getUsableBalance();
             $newUsableBalance = $usableBalance + $transactionAmount;
             $wallet->setUsableBalance($newUsableBalance);
 
-            // Mettre à jour le solde de crypto
             $cryptoBalance = $wallet->getCryptoBalance();
             $newCryptoBalance = $cryptoBalance - $transactionAmount;
             $wallet->setCryptoBalance($newCryptoBalance);
 
-            // Persistez les modifications apportées au portefeuille
             $entityManager->persist($wallet);
 
-            // Enregistrez la transaction dans la base de données
             $entityManager->persist($transaction);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
         } else {
-            // Gérer le cas où le montant de la transaction dépasse la valeur totale de la crypto-monnaie détenue dans le portefeuille
             $this->addFlash('error', 'Le montant de la transaction dépasse la valeur totale de la crypto-monnaie détenue dans votre portefeuille.');
         }
     } else {
-        // Gérer le cas où la quantité à vendre est supérieure à la quantité de crypto-monnaie détenue dans le portefeuille
         $this->addFlash('error', 'Vous ne pouvez pas vendre plus de crypto-monnaie que ce que vous avez dans votre portefeuille.');
     }
 

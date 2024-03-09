@@ -130,7 +130,6 @@ class Transaction
     public function removeCrypto(Wallet $crypto): static
     {
         if ($this->cryptos->removeElement($crypto)) {
-            // set the owning side to null (unless already changed)
             if ($crypto->getTransaction() === $this) {
                 $crypto->setTransaction(null);
             }

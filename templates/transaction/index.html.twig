@@ -1,88 +1,47 @@
-{# {% extends 'base.html.twig' %}
-
-{% block title %}Transaction index{% endblock %}
-
-{% block body %}
-    <h1>Transaction index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>User ID</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Amount</th>
-                <th>Crypto</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for transaction in transactions %}
-            <tr>
-                <td>{{ transaction.id }}</td>
-                <td>{{ transaction.user.id }}</td>
-                <td>{{ transaction.date ? transaction.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ transaction.type }}</td>
-                <td>{{ transaction.quantity }}</td>
-                <td>{{ transaction.amount }}</td>
-                <td>{{ transaction.crypto }}</td>
-                <td>
-                    <a href="{{ path('app_transaction_show', {'id': transaction.id}) }}">show</a>
-                    <a href="{{ path('app_transaction_edit', {'id': transaction.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_transaction_buy') }}">Buy</a>
-    <a href="{{ path('app_transaction_sell') }}">Sell</a>
-{% endblock %} #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Transaction index{% endblock %}
 
 {% block body %}
-    <h1>Transaction index</h1>
+    <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="main-breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Transaction History</li>
+            </ol>
+        </nav>
+        <!-- /Breadcrumb -->
 
-    <table class="table">
+<table class="table">
         <thead>
             <tr>
+            {% if is_granted('ROLE_ADMIN') %}
                 <th>Id</th>
                 <th>User ID</th>
+            {% endif %}
                 <th>Date</th>
+                <th>Cryptocurrency</th>
                 <th>Type</th>
                 <th>Quantity</th>
-                <th>Amount</th>
-                {# <th>Crypto</th> #}
-                <th>Cryptocurrency<th>
-                <th>Actions</th>
+                <th>Amount<th>
+                {# <th>Actions</th> #}
             </tr>
         </thead>
         <tbody>
         {% for transaction in transactions %}
             {% if is_granted('ROLE_ADMIN') or app.user.id == transaction.user.id %}
                 <tr>
+                {% if is_granted('ROLE_ADMIN') %}
                     <td>{{ transaction.id }}</td>
                     <td>{{ transaction.user.id }}</td>
+                {% endif %}
                     <td>{{ transaction.date ? transaction.date|date('Y-m-d H:i:s') : '' }}</td>
-                    <td>{{ transaction.type }}</td>
+                    <td>
+                        <img src="{{ transaction.cryptocurrency.icon }}" alt="Logo de la cryptomonnaie" width="20" height="20">
+                        {{ transaction.cryptocurrency.name }}
+                    </td>                    <td>{{ transaction.type }}</td>
                     <td>{{ transaction.quantity }}</td>
                     <td>{{ transaction.amount }}</td>
-                    {# <td>{{ transaction.crypto }}</td> #}
-                    <td>{{ transaction.cryptocurrency.name }}</td>
-
-                    <td>
-                        <a href="{{ path('app_transaction_show', {'id': transaction.id}) }}">show</a>
-                        <a href="{{ path('app_transaction_edit', {'id': transaction.id}) }}">edit</a>
-                    </td>
                 </tr>
             {% endif %}
         {% else %}
@@ -92,7 +51,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_transaction_buy') }}">Buy</a>
-    <a href="{{ path('app_transaction_sell') }}">Sell</a>
 {% endblock %}

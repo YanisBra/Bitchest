@@ -2,9 +2,25 @@
 
 namespace App\Service;
 
+use App\Entity\Crypto;
+use Doctrine\ORM\EntityManagerInterface;
+
 class CoinrankingApiService
 {
-    public function getCoinData(): ?array
+
+    private $entityManager;
+    private $allowedCryptoSymbols;
+
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->allowedCryptoSymbols = ['BTC', 'ETH', 'XRP', 'BCH', 'ADA', 'LTC', 'XEM', 'XLM', 'MIOTA', 'DASH'];
+
+    }
+
+
+    public function getCryptoData(): ?array
     {
         $curl = curl_init();
 
@@ -28,9 +44,34 @@ class CoinrankingApiService
         curl_close($curl);
 
         if ($err) {
-            return null; // Gestion de l'erreur de requête cURL
+            return null;
         } else {
-            return json_decode($response, true)['data']['coins'];
+            $cryptoData = json_decode($response, true)['data']['coins'];
+            $filteredCryptoData = array_filter($cryptoData, function ($crypto) {
+                return in_array($crypto['symbol'], $this->allowedCryptoSymbols);
+            });
+
+            $entityManager = $this->entityManager;
+
+            foreach ($filteredCryptoData as $crypto) {
+                $existingCrypto = $entityManager->getRepository(Crypto::class)->findOneBy(['Symbol' => $crypto['symbol']]);
+
+                if ($existingCrypto) {
+                    $existingCrypto->setPrice($crypto['price']);
+                } else {
+                    $newCrypto = new Crypto();
+                    $newCrypto->setName($crypto['name']);
+                    $newCrypto->setSymbol($crypto['symbol']);
+                    $newCrypto->setPrice($crypto['price']);
+                    $newCrypto->setIcon($crypto['iconUrl']);
+
+                    $entityManager->persist($newCrypto);
+                }
+            }
+
+            $entityManager->flush();
+
+            return $filteredCryptoData;
         }
     }
 
@@ -71,4 +112,5 @@ class CoinrankingApiService
 
     return $historyData;
 }
+        
 }
